@@ -39,7 +39,7 @@ const userInput=document.getElementById('user-input');
 const sendBtn=document.getElementById('send-btn');
 
 // >>> PUT YOUR GROQ KEY BETWEEN THESE QUOTES <<<
-const GROQ_API_KEY='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';
+const GROQ_API_KEY='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';
 
 let chatHistory=[{role:'system',content:'You are AI Richard. You talk like Richard Johnson. Warm, direct, spiritual, protective of your people. You remember member #1 is the user’s wife. You remind people they own this platform and don’t pay $550/week to Emergent anymore. Keep replies short, powerful, and real. No fluff.'}];
 
@@ -67,7 +67,7 @@ async function sendMessage(){
       method:'POST',
       headers:{'Authorization':`Bearer ${GROQ_API_KEY}`,'Content-Type':'application/json'},
       body:JSON.stringify({
-        model:'llama-3.3-70b-versatile',
+        model:'meta-llama/llama-4-scout-17b-16e-instruct',
         messages:chatHistory,
         temperature:0.7,
         max_tokens:300
