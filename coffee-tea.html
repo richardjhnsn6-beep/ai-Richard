@@ -6,7 +6,7 @@
   <style>
     body { background:#0a1f0a; color:#e8ffe8; font-family:Arial; margin:0; }
     nav { background:#0d2d0d; border-bottom:2px solid #22c55e; padding:12px 0; position:sticky; top:0; z-index:1000; }
-  .container { max-width:800px; margin:40px auto; padding:0 20px; text-align:center; }
+ .container { max-width:800px; margin:40px auto; padding:0 20px; text-align:center; }
     h1 { color:#22c55e; }
     select, button { padding:12px; margin:10px; border-radius:8px; border:1px solid #22c55e; background:#1a3d1a; color:#fff; font-size:16px; }
     button { background:#22c55e; color:#000; font-weight:bold; cursor:pointer; }
@@ -56,4 +56,24 @@
       "Houston Heights, TX": "Try Boomtown Coffee. The Heights remembers history — and you’re making it. Your story brings life to these streets.",
       "Katy, TX": "Gather at Summer Moon. Katy grows fast, but living things need roots. Plant yours deep. Your children will harvest.",
       "Spring, TX": "Old Town Spring Tea & Spice. Spring means new life. Whatever looked dead last season — God’s breathing on it now. Rise.",
-      "Cypress, TX": "Visit Casa de Cafe
+      "Cypress, TX": "Visit Casa de Cafe. Cypress trees bend but don’t break — same as you. Stay green. Hold the line for your people.",
+      "Beaumont, TX": "The Cajun Cafe on Calder. Beaumont, you’ve seen storms. But you’re still here. That’s your word: Still. Still growing. Still chosen.",
+      "Port Arthur, TX": "RAO’s Bakery. Port Arthur, you’re the edge but you’re not forgotten. Where the water meets land, life flourishes.",
+      "Conroe, TX": "Southern Star Brewing Coffee. Conroe, you’re a gateway. Walk through it like the ground is sacred — because it is.",
+      "The Woodlands, TX": "Press Waffle Co for tea. The Woodlands, even in the forest, you’re seen. Green means go. Let your light grow."
+    };
+
+    function getRichardWord() {
+      const city = document.getElementById('citySelect').value;
+      const answerDiv = document.getElementById('richardAnswer');
+      if(city && cityWords[city]) {
+        answerDiv.innerHTML = `<h3 style="color:#22c55e; margin-top:0;">👑 AI Richard says:</h3><p style="font-size:18px; line-height:1.6;">"${cityWords[city]}"</p><p style="color:#86efac; font-size:14px; margin-bottom:0;">— Richard Johnson, Keeper of the Gallery</p>`;
+        answerDiv.style.display = 'block';
+      } else {
+        answerDiv.innerHTML = `<p style="color:#22c55e;">Choose a city first, and AI Richard will meet you there.</p>`;
+        answerDiv.style.display = 'block';
+      }
+    }
+  </script>
+</body>
+</html>
