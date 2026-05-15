@@ -1,1 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Coffee & Tea with AI Richard | Richard Johnson</title>
+  <style>
+    body { background:#0a1f0a; color:#e8ffe8; font-family:Arial; margin:0; }
+    nav { background:#0d2d0d; border-bottom:2px solid #22c55e; padding:12px 0; position:sticky; top:0; z-index:1000; }
+  .container { max-width:800px; margin:40px auto; padding:0 20px; text-align:center; }
+    h1 { color:#22c55e; }
+    select, button { padding:12px; margin:10px; border-radius:8px; border:1px solid #22c55e; background:#1a3d1a; color:#fff; font-size:16px; }
+    button { background:#22c55e; color:#000; font-weight:bold; cursor:pointer; }
+    button:hover { background:#16a34a; }
+    #richardAnswer { margin-top:30px; padding:20px; background:#0d2d0d; border-radius:12px; border-left:4px solid #22c55e; text-align:left; display:none; }
+    a { color:#e8ffe8; text-decoration:none; }
+    a:hover { color:#22c55e; }
+  </style>
+</head>
+<body>
+  <!-- GREEN MENU BAR -->
+  <nav>
+    <div style="max-width:1200px; margin:0 auto; display:flex; justify-content:center; flex-wrap:wrap; gap:20px; font-family:Arial;">
+      <a href="/ai-Richard/richard.html" style="font-size:16px;">👑 AI Richard</a>
+      <a href="/coffee-tea.html" style="color:#22c55e; font-weight:bold; font-size:16px;">☕ Coffee & Tea</a>
+      <a href="/gallery.html" style="font-size:16px;">🖼️ Biblical Gallery</a>
+      <a href="/cities.html" style="font-size:16px;">📍 Our 9 Cities</a>
+      <a href="/about.html" style="font-size:16px;">📜 About the Guide</a>
+    </div>
+  </nav>
 
+  <div class="container">
+    <h1>☕ Coffee & Tea with AI Richard</h1>
+    <p style="color:#a7f3d0; font-size:18px;">Choose your city. Let the Guide recommend where to gather — and speak life over your people.</p>
+    
+    <select id="citySelect">
+      <option value="">Select your city...</option>
+      <option value="Jersey Village, TX">Jersey Village</option>
+      <option value="Houston Heights, TX">Houston Heights</option>
+      <option value="Katy, TX">Katy</option>
+      <option value="Spring, TX">Spring</option>
+      <option value="Cypress, TX">Cypress</option>
+      <option value="Beaumont, TX">Beaumont</option>
+      <option value="Port Arthur, TX">Port Arthur</option>
+      <option value="Conroe, TX">Conroe</option>
+      <option value="The Woodlands, TX">The Woodlands</option>
+    </select>
+    
+    <button onclick="getRichardWord()">Ask AI Richard</button>
+    
+    <div id="richardAnswer"></div>
+  </div>
+
+  <script>
+    const cityWords = {
+      "Jersey Village, TX": "Meet at Renegade Coffee. This is home base. Your voice built this gallery. Stand tall here — new life grows from roots.",
+      "Houston Heights, TX": "Try Boomtown Coffee. The Heights remembers history — and you’re making it. Your story brings life to these streets.",
+      "Katy, TX": "Gather at Summer Moon. Katy grows fast, but living things need roots. Plant yours deep. Your children will harvest.",
+      "Spring, TX": "Old Town Spring Tea & Spice. Spring means new life. Whatever looked dead last season — God’s breathing on it now. Rise.",
+      "Cypress, TX": "Visit Casa de Cafe
