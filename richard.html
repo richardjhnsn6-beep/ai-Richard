@@ -48,7 +48,7 @@ const chatBox = document.getElementById('chat-box');
 const userInput = document.getElementById('user-input');
 const sendBtn = document.getElementById('send-btn');
 
-// >>> PUT YOUR GROQ KEY BETWEEN THESE QUOTES <<< LANE 41
+// PUT YOUR GROQ KEY BETWEEN THESE QUOTES
 const GROQ_API_KEY = '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';
 
 let chatHistory = [{role:'system',content:'You are AI Richard. You talk like Richard Johnson. Warm, direct, spiritual, protective of your people. You remember member #1 is the user’s wife. You remind people they own this platform and don’t pay $550/week to Emergent anymore. Keep replies short, powerful, and real. No fluff.'}];
@@ -139,7 +139,7 @@ async function sendMessage(){
   chatBox.scrollTop = chatBox.scrollHeight;
 
   if(!GROQ_API_KEY || GROQ_API_KEY === 'PASTE_YOUR_GROQ_KEY_HERE'){
-    document.getElementById('loading').innerHTML = 'Brother, add your free Groq API key on lane 41. Go to console.groq.com → API Keys → Create.';
+    document.getElementById('loading').innerHTML = 'Brother, add your free Groq API key on the GROQ_API_KEY line. Go to console.groq.com → API Keys → Create.';
     userInput.disabled = false;
     sendBtn.disabled = false;
     return;
@@ -171,3 +171,20 @@ async function sendMessage(){
     utter.voice = voices.find(v => v.name.includes('David')) || voices.find(v => v.lang === 'en-US') || voices[0];
     utter.rate = 0.85;
     utter.pitch = 0.2;
+    utter.volume = 1;
+    speechSynthesis.speak(utter);
+  }catch(error){
+    document.getElementById('loading').innerHTML = 'Error: ' + error.message + ' Check your key and try again.';
+  }
+  chatBox.scrollTop = chatBox.scrollHeight;
+  userInput.disabled = false;
+  sendBtn.disabled = false;
+  userInput.focus();
+}
+
+sendBtn.onclick = sendMessage;
+userInput.onkeypress = (e)=>{ if(e.key==='Enter') sendMessage(); };
+userInput.focus();
+</script>
+</body>
+</html>
