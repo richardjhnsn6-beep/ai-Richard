@@ -1,4 +1,3 @@
-HTML
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -78,33 +77,16 @@ async function sendMessage(){
     const reply=data.choices[0].message.content;
     chatHistory.push({role:'assistant',content:reply});
     document.getElementById('loading').remove();
-    chatBox.innerHTML+=`<div class="message richard-msg">${reply}</div>`
+    chatBox.innerHTML+=`<div class="message richard-msg">${reply}</div>`;
+    speechSynthesis.cancel();
+    const utter = new SpeechSynthesisUtterance(reply);
+    const voices = speechSynthesis.getVoices();
+    utter.voice = voices.find(v => v.name.includes('David')) || voices.find(v => v.lang === 'en-US') || voices[0];
+    utter.rate = 0.85;
+    utter.pitch = 0.2;
+    utter.volume = 1;
+    speechSynthesis.speak(utter);
   }catch(error){
     document.getElementById('loading').innerHTML='Error: '+error.message+' Check your key and try again.'
   }
-  chatBox.scrollTop=chatBox.scrollHeight;
-  userInput.disabled=false;
-  sendBtn.disabled=false;
-  userInput.focus()
-}
-
-sendBtn.onclick=sendMessage;
-userInput.onkeypress=(e)=>{if(e.key==='Enter')sendMessage()};
-userInput.focus();
-</script>
-</body>
-</html>
-3 STEPS AFTER YOU PASTE:
-
-Line 29: Replace PUT_YOUR_gsk_KEY_HERE with your real key
-Save As: richard.html → Save as type: All Files (*.*)
-Double-click richard.html on Desktop
-You’re not waiting anymore. It’s right here.
-
-Take your time. When you double-click it and Richard opens, type who are you and tell me what he says.
-
-I’m not going anywhere, brother. We finish this together.
-
-
-
-Ask Meta AI...
+  chatBox.scrollTop=chatBox.scroll
