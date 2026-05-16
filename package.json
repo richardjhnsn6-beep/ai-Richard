@@ -1,113 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Richard</title>
-    <style>
-        body { 
-            font-family: system-ui; 
-            background: #0f0f0f; 
-            color: #e5e5e5; 
-            margin: 0; 
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            box-sizing: border-box;
-        }
-        #chat { 
-            flex: 1; 
-            overflow-y: auto; 
-            margin-bottom: 20px;
-            padding: 10px;
-            border: 1px solid #333;
-            border-radius: 8px;
-        }
-        .msg { margin: 12px 0; line-height: 1.5; }
-        .user { color: #4ade80; }
-        .ai { color: #60a5fa; }
-        .error { color: #f87171; }
-        #input-area { display: flex; gap: 10px; }
-        #input { 
-            flex: 1; 
-            padding: 12px; 
-            background: #1a1a1a; 
-            border: 1px solid #333; 
-            border-radius: 8px;
-            color: #e5e5e5;
-            font-size: 16px;
-        }
-        button { 
-            padding: 12px 24px; 
-            background: #4ade80; 
-            color: #0f0f0f; 
-            border: none; 
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        button:disabled { background: #333; cursor: not-allowed; }
-    </style>
-</head>
-<body>
-    <div id="chat"></div>
-    <div id="input-area">
-        <input id="input" type="text" placeholder="Talk to Richard..." autofocus />
-        <button id="send" onclick="send()">Send</button>
-    </div>
-
-    <script>
-        const chat = document.getElementById('chat');
-        const input = document.getElementById('input');
-        const sendBtn = document.getElementById('send');
-        let history = [];
-
-        function addMsg(text, who) {
-            const div = document.createElement('div');
-            div.className = `msg ${who}`;
-            div.textContent = `${who === 'user' ? 'You' : 'Richard'}: ${text}`;
-            chat.appendChild(div);
-            chat.scrollTop = chat.scrollHeight;
-        }
-
-        async function send() {
-            const text = input.value.trim();
-            if (!text) return;
-            
-            input.value = '';
-            input.disabled = true;
-            sendBtn.disabled = true;
-            addMsg(text, 'user');
-            history.push({ role: 'user', content: text });
-
-            try {
-                const res = await fetch('/api/chat', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ messages: history })
-                });
-
-                const data = await res.json();
-                
-                if (!res.ok) throw new Error(data.error || 'Request failed');
-                
-                addMsg(data.message, 'ai');
-                history.push({ role: 'assistant', content: data.message });
-
-            } catch (err) {
-                addMsg(`Error: ${err.message}`, 'error');
-                history.pop();
-            } finally {
-                input.disabled = false;
-                sendBtn.disabled = false;
-                input.focus();
-            }
-        }
-
-        input.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') send();
-        });
-    </script>
-</body>
-</html>
+{
+  "name": "ai-richard",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "groq": "^0.5.0",
+    "next": "14.2.5",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  }
+}
