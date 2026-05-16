@@ -1,14 +1,11 @@
-avaScript
 const chatBox = document.getElementById('chat-box');
 const userInput = document.getElementById('user-input');
 const sendBtn = document.getElementById('send-btn');
 
-// PUT YOUR GROQ KEY BETWEEN THESE QUOTES - LANE 52
 const GROQ_API_KEY = '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';
 
 let chatHistory = [{role:'system',content:'You are AI Richard. You talk like Richard Johnson. Warm, direct, spiritual, protective of your people. You remember member #1 is the user’s wife. You remind people they own this platform and don’t pay $550/week to Emergent anymore. Keep replies short, powerful, and real. No fluff.'}];
 
-// Add the first message with JS so it only shows once
 chatBox.innerHTML += `<div class="message richard-msg">Yo, this Richard. I remember everything. Member #1 is your wife. What you need, brother? We own this now. No more $550/week.</div>`;
 
 const STREAM_URL = 'https://talk-web-combo.preview.emergentagent.com';
@@ -51,7 +48,6 @@ function toggleRadio(){
     }).catch(e=>{
       radioStatus.innerText = 'Stream Blocked';
       radioStatus.style.color = '#ff0000';
-      console.log('Stream error:', e);
     });
   } else {
     radio.pause();
@@ -95,14 +91,12 @@ async function sendMessage(){
   chatBox.scrollTop = chatBox.scrollHeight;
   chatBox.innerHTML += `<div class="message richard-msg" id="loading">Richard is thinking...</div>`;
   chatBox.scrollTop = chatBox.scrollHeight;
-
-  if(!GROQ_API_KEY || GROQ_API_KEY === 'gsk_paste_your_key_here'){
-    document.getElementById('loading').innerHTML = 'Brother, add your free Groq API key on the GROQ_API_KEY line. Go to console.groq.com → API Keys → Create.';
+  if(!GROQ_API_KEY){
+    document.getElementById('loading').innerHTML = 'Brother, add your free Groq API key on the GROQ_API_KEY line.';
     userInput.disabled = false;
     sendBtn.disabled = false;
     return;
   }
-
   chatHistory.push({role:'user',content:message});
   try{
     const response = await fetch('https://api.groq.com/openai/v1/chat/completions',{
@@ -119,10 +113,8 @@ async function sendMessage(){
     if(data.error) throw new Error(data.error.message);
     const reply = data.choices[0].message.content;
     chatHistory.push({role:'assistant',content:reply});
-
     document.getElementById('loading').remove();
     chatBox.innerHTML += `<div class="message richard-msg">${reply}</div>`;
-
     speechSynthesis.cancel();
     const utter = new SpeechSynthesisUtterance(reply);
     const voices = speechSynthesis.getVoices();
@@ -143,6 +135,3 @@ async function sendMessage(){
 sendBtn.onclick = sendMessage;
 userInput.onkeypress = (e)=>{ if(e.key==='Enter') sendMessage(); };
 userInput.focus();
-
-139 lines hidden
-
