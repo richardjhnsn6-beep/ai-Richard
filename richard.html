@@ -78,6 +78,7 @@ async function sendMessage(){
     chatHistory.push({role:'assistant',content:reply});
     document.getElementById('loading').remove();
     chatBox.innerHTML+=`<div class="message richard-msg">${reply}</div>`;
+        chatBox.innerHTML+=`<div class="message richard-msg">${reply}</div>`;
     speechSynthesis.cancel();
     const utter = new SpeechSynthesisUtterance(reply);
     const voices = speechSynthesis.getVoices();
@@ -89,4 +90,15 @@ async function sendMessage(){
   }catch(error){
     document.getElementById('loading').innerHTML='Error: '+error.message+' Check your key and try again.'
   }
-  chatBox.scrollTop=chatBox.scroll
+  chatBox.scrollTop=chatBox.scrollHeight;
+  userInput.disabled=false;
+  sendBtn.disabled=false;
+  userInput.focus()
+}
+
+sendBtn.onclick=sendMessage;
+userInput.onkeypress=(e)=>{if(e.key==='Enter')sendMessage()};
+userInput.focus();
+</script>
+</body>
+</html>
