@@ -48,12 +48,11 @@ const chatBox = document.getElementById('chat-box');
 const userInput = document.getElementById('user-input');
 const sendBtn = document.getElementById('send-btn');
 
-// >>> PUT YOUR GROQ KEY BETWEEN THESE QUOTES <<<
-const GROQ_API_KEY = 'PASTE_YOUR_GROQ_KEY_HERE';
+// >>> PUT YOUR GROQ KEY BETWEEN THESE QUOTES <<< LANE 41
+const GROQ_API_KEY = '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';
 
 let chatHistory = [{role:'system',content:'You are AI Richard. You talk like Richard Johnson. Warm, direct, spiritual, protective of your people. You remember member #1 is the user’s wife. You remind people they own this platform and don’t pay $550/week to Emergent anymore. Keep replies short, powerful, and real. No fluff.'}];
 
-// SCHOLAR RADIO ENGINE v3.2 — SINGLE INSTANCE
 const STREAM_URL = 'https://talk-web-combo.preview.emergentagent.com';
 const radio = document.getElementById('scholarRadio');
 const radioToggle = document.getElementById('radioToggle');
@@ -64,4 +63,107 @@ let reconnectAttempts = 0;
 
 radio.addEventListener('ended', ()=>{ if(radioPlaying) restartStream(); });
 radio.addEventListener('error', ()=>{ if(radioPlaying) restartStream(); });
-radio.addEventListener('stalled', ()=>{
+radio.addEventListener('stalled', ()=>{ if(radioPlaying) restartStream(); });
+
+if('mediaSession' in navigator){
+  navigator.mediaSession.setActionHandler('play', ()=>toggleRadio());
+  navigator.mediaSession.setActionHandler('pause', ()=>toggleRadio());
+}
+
+function restartStream(){
+  reconnectAttempts++;
+  radioStatus.innerText = `Reconnecting ${reconnectAttempts}...`;
+  radioStatus.style.color = '#ffd700';
+  setTimeout(()=>{
+    radio.src = STREAM_URL + '?t=' + Date.now();
+    radio.play().catch(()=>{});
+  }, 2000);
+}
+
+function toggleRadio(){
+  if(!radioPlaying){
+    radio.src = STREAM_URL;
+    radio.play().then(()=>{
+      radioPlaying = true;
+      reconnectAttempts = 0;
+      radioToggle.innerText = '⏸️ Live';
+      radioStatus.innerText = 'Broadcasting';
+      radioStatus.style.color = '#00ff00';
+      localStorage.setItem('scholar_radio','on');
+    }).catch(e=>{
+      radioStatus.innerText = 'Stream Blocked';
+      radioStatus.style.color = '#ff0000';
+      console.log('Stream error:', e);
+    });
+  } else {
+    radio.pause();
+    radio.src = '';
+    radioPlaying = false;
+    radioToggle.innerText = '▶️ Stream';
+    radioStatus.innerText = 'Offline';
+    radioStatus.style.color = '#666';
+    localStorage.setItem('scholar_radio','off');
+  }
+}
+
+radioToggle.onclick = toggleRadio;
+radioVolume.oninput = (e)=>{
+  radio.volume = e.target.value;
+  localStorage.setItem('scholar_volume', e.target.value);
+};
+
+window.addEventListener('load', ()=>{
+  const vol = localStorage.getItem('scholar_volume') || 0.7;
+  radio.volume = vol;
+  radioVolume.value = vol;
+  if(localStorage.getItem('scholar_radio') === 'on'){
+    setTimeout(()=>toggleRadio(), 1000);
+  }
+});
+
+setInterval(()=>{
+  if(radioPlaying && radio.paused){
+    radio.play().catch(()=>{});
+  }
+}, 5000);
+
+async function sendMessage(){
+  const message = userInput.value.trim();
+  if(!message) return;
+  userInput.disabled = true;
+  sendBtn.disabled = true;
+  chatBox.innerHTML += `<div class="message user-msg">${message}</div>`;
+  userInput.value = '';
+  chatBox.scrollTop = chatBox.scrollHeight;
+  chatBox.innerHTML += `<div class="message richard-msg" id="loading">Richard is thinking...</div>`;
+  chatBox.scrollTop = chatBox.scrollHeight;
+
+  if(!GROQ_API_KEY || GROQ_API_KEY === 'PASTE_YOUR_GROQ_KEY_HERE'){
+    document.getElementById('loading').innerHTML = 'Brother, add your free Groq API key on lane 41. Go to console.groq.com → API Keys → Create.';
+    userInput.disabled = false;
+    sendBtn.disabled = false;
+    return;
+  }
+
+  chatHistory.push({role:'user',content:message});
+  try{
+    const response = await fetch('https://api.groq.com/openai/v1/chat/completions',{
+      method:'POST',
+      headers:{'Authorization':`Bearer ${GROQ_API_KEY}`,'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'meta-llama/llama-4-scout-17b-16e-instruct',
+        messages:chatHistory,
+        temperature:0.7,
+        max_tokens:300
+      })
+    });
+    const data = await response.json();
+    if(data.error) throw new Error(data.error.message);
+    const reply = data.choices[0].message.content;
+    chatHistory.push({role:'assistant',content:reply});
+    document.getElementById('loading').remove();
+    chatBox.innerHTML += `<div class="message richard-msg">${reply}</div>`;
+    speechSynthesis.cancel();
+    const utter = new SpeechSynthesisUtterance(reply);
+    const voices = speechSynthesis.getVoices();
+    utter.voice = voices.find(v => v.name.includes('David')) ||
