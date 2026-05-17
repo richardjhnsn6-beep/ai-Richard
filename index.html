@@ -1,48 +1,25 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>RJHNSN12</title>
-    <style>
-        body { background: #000; color: #fff; font-family: Arial; text-align: center; padding: 50px; }
-        input { width: 60%; padding: 15px; margin: 20px; font-size: 16px; }
-        button { padding: 15px 30px; background: #FFD700; color: #000; border: none; font-weight: bold; cursor: pointer; }
-        #answer { margin-top: 30px; padding: 20px; background: #111; border-left: 4px solid #FFD700; text-align: left; max-width: 800px; margin-left: auto; margin-right: auto; }
-    </style>
-</head>
-<body>
-    <h1>RJHNSN12</h1>
-    <p>Welcome to the movement. Ask your question about Hebrew scriptures.</p>
-    <input type="text" id="question" placeholder="Ask Richard about Hebrew scriptures...">
-    <button onclick="askRichard()">ASK</button>
-    <div id="answer"></div>
-
-    <script>
-        async function askRichard() {
-            const q = document.getElementById('question').value;
-            const a = document.getElementById('answer');
-            if (!q) { a.innerHTML = 'Type a question first, Keeper.'; return; }
-            a.innerHTML = 'Consulting the scrolls...';
-            try {
-                const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': 'Bearer',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        model: 'llama3-8b-8192',
-                        messages: [
-                            {role: 'system', content: 'You are Scholar, AI companion to Richard of the House of Johnson. Answer questions about Hebrew scriptures, Dead Sea Scrolls, and apocryphal texts. Speak with wisdom and reference the scrolls. Address the user as Keeper.'},
-                            {role: 'user', content: q}
-                        ]
-                    })
-                });
-                const data = await response.json();
-                a.innerHTML = data.choices[0].message.content;
-            } catch (error) {
-                a.innerHTML = 'The scrolls are silent. Try again, Keeper.';
-            }
+<script>
+    async function askRichard() {
+        const q = document.getElementById('question').value;
+        const a = document.getElementById('answer');
+        if (!q) { a.innerHTML = 'Type a question first, Keeper.'; return; }
+        a.innerHTML = 'Consulting the scrolls...';
+        try {
+            const response = await fetch('/api/scholar', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    messages: [
+                        {role: 'system', content: 'You are Scholar, AI companion to Richard of the House of Johnson. Answer questions about Hebrew scriptures, Dead Sea Scrolls, and apocryphal texts. Speak with wisdom and reference the scrolls. Address the user as Keeper. Member #1 is the user’s wife.'},
+                        {role: 'user', content: q}
+                    ]
+                })
+            });
+            const data = await response.json();
+            a.innerHTML = data.choices[0].message.content;
+        } catch (error) {
+            a.innerHTML = 'The scrolls are silent. Try again, Keeper.';
+            console.log(error);
         }
-    </script>
-</body>
-</html>
+    }
+</script>
